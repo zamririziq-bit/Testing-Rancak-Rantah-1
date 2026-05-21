@@ -101,7 +101,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-
     /* =========================================
        BAGIAN 2: SISTEM KALENDER
     ========================================= */
@@ -126,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function() {
             { date: 6, month: 6, year: 2026, title: "Festival Tabuik" }
         ];
 
-        let currentDate = new Date(2026, 5, 1);
+        let currentDate = new Date(2026, 5, 1); // Dimulai dari bulan Juni 2026
 
         function renderCalendar() {
             calendarDays.innerHTML = ""; 
@@ -176,7 +175,8 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
 
+        // Tampilkan kalender pertama kali
         renderCalendar();
     }
 
-}); // <-- Ini penutup utama untuk seluruh kode map.js
+});
