@@ -138,6 +138,93 @@ document.addEventListener("DOMContentLoaded", function() {
             // Kembalikan tombol ke semula
             applyBtn.textContent = "Apply Filter";
             applyBtn.style.opacity = "1";
+
+            <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const monthYearDisplay = document.getElementById("month-year-display");
+    const calendarDays = document.getElementById("calendar-days");
+    const prevMonthBtn = document.getElementById("prev-month");
+    const nextMonthBtn = document.getElementById("next-month");
+
+    // Nama-nama bulan dalam bahasa Indonesia
+    const monthNames = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+
+    // Data event (Sebagai contoh: Festival Rendang & Pacu Jawi di bulan Juni 2026)
+    const events = [
+      { date: 15, month: 5, year: 2026, title: "Festival Rendang" },
+      { date: 16, month: 5, year: 2026, title: "Festival Rendang" },
+      { date: 17, month: 5, year: 2026, title: "Festival Rendang" },
+      { date: 22, month: 5, year: 2026, title: "Pacu Jawi" },
+      { date: 23, month: 5, year: 2026, title: "Pacu Jawi" },
+      { date: 5, month: 6, year: 2026, title: "Festival Tabuik" },
+      { date: 6, month: 6, year: 2026, title: "Festival Tabuik" }
+    ];
+
+    // Mulai dari Juni 2026 (Bulan ke-5, karena index JS dimulai dari 0)
+    let currentDate = new Date(2026, 5, 1);
+
+    function renderCalendar() {
+      // Bersihkan kalender lama
+      calendarDays.innerHTML = "";
+
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+
+      // Update Teks Header (Misal: Juni 2026)
+      monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
+
+      // Cari tahu hari pertama bulan ini (0 = Minggu, 1 = Senin, dst)
+      const firstDay = new Date(year, month, 1).getDay();
+      // Cari tahu jumlah hari dalam bulan ini
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      // Menyesuaikan index hari agar Senin menjadi awalan (Senin = 0, Minggu = 6)
+      let startDayIndex = firstDay === 0 ? 6 : firstDay - 1;
+
+      // Cetak slot kosong di awal bulan
+      for (let i = 0; i < startDayIndex; i++) {
+        const emptyDiv = document.createElement("div");
+        emptyDiv.classList.add("calendar-day", "empty");
+        calendarDays.appendChild(emptyDiv);
+      }
+
+      // Cetak tanggal-tanggalnya
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayDiv = document.createElement("div");
+        dayDiv.classList.add("calendar-day");
+        dayDiv.textContent = day;
+
+        // Cek apakah tanggal ini punya event
+        const hasEvent = events.find(e => e.date === day && e.month === month && e.year === year);
+        
+        if (hasEvent) {
+          dayDiv.classList.add("event-day");
+          dayDiv.title = hasEvent.title; // Menampilkan tooltip nama event
+        }
+
+        calendarDays.appendChild(dayDiv);
+      }
+    }
+
+    // Event Listener untuk Tombol Previous
+    prevMonthBtn.addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendar();
+    });
+
+    // Event Listener untuk Tombol Next
+    nextMonthBtn.addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendar();
+    });
+
+    // Render kalender saat pertama kali halaman dimuat
+    renderCalendar();
+  });
+</script>
         }, 400); // Simulasi delay 400ms agar terasa interaktif
     });
 });
