@@ -1,48 +1,56 @@
-// Inisialisasi peta
-var map = L.map('map').setView([-0.9492, 100.3543], 8);
+// 1. Inisialisasi Peta Leaflet mengarah ke koordinat tengah Sumatera Barat
+const map = L.map('map').setView([-0.7893, 100.6562], 8); 
 
-// Basemap OpenStreetMap
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap Contributors'
+// 2. Tambahkan layer peta (Basemap) bergaya terang/light map sesuai layout UI
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 20
 }).addTo(map);
 
-// Data destinasi wisata
-var destinations = [
-    {
-        name: "Pantai Carolina",
-        location: [-1.103, 100.363],
-        description: "Pantai indah di Padang dengan pasir putih dan pulau kecil di sekitarnya."
-    },
+// 3. Data koordinat destinasi (Dummy Geo-koordinat Sumbar)
+const locations = [
     {
         name: "Air Terjun Sarasah",
-        location: [-1.724, 100.676],
-        description: "Air terjun alami yang tersembunyi di kawasan hutan Pesisir Selatan."
+        category: "nature",
+        coords: [-1.2542, 100.5644], // Area Pesisir Selatan
+        desc: "Waterfall di Pesisir Selatan"
     },
     {
-        name: "Desa Pariangan",
-        location: [-0.455, 100.493],
-        description: "Salah satu desa terindah di dunia yang berada di Tanah Datar."
-    },
-    {
-        name: "Danau Tarusan",
-        location: [-1.235, 100.529],
-        description: "Danau alami yang dikelilingi bukit hijau di Pesisir Selatan."
-    },
-    {
-        name: "Bukittinggi",
-        location: [-0.305, 100.369],
-        description: "Kota wisata terkenal dengan Jam Gadang dan panorama Ngarai Sianok."
+        name: "Pantai Carolina",
+        category: "beach",
+        coords: [-0.9492, 100.3622], // Area dekat Padang / Pariaman
+        desc: "Pantai Indah tersembunyi"
     }
 ];
 
-// Menambahkan marker ke peta
-destinations.forEach(function(place) {
+// Array penampung marker untuk mempermudah manipulasi filter
+let markerLayerGroup = L.layerGroup().addTo(map);
 
-    var marker = L.marker(place.location).addTo(map);
+// 4. Fungsi menggambar marker berdasarkan filter kategori
+function renderMarkers() {
+    // Bersihkan map dari marker sebelumnya
+    markerLayerGroup.clearLayers();
 
-    marker.bindPopup(
-        "<b>" + place.name + "</b><br>" +
-        place.description
-    );
+    // Ambil status kondisi checkbox filter dari HTML
+    const showNature = document.getElementById('cat-nature').checked;
+    const showBeach = document.getElementById('cat-beach').checked;
 
-});
+    locations.forEach(loc => {
+        if ((loc.category === 'nature' && showNature) || (loc.category === 'beach' && showBeach)) {
+            
+            // Buat marker kustom sederhana berwarna merah marun
+            const marker = L.marker(loc.coords)
+                .bindPopup(`<b>${loc.name}</b><br>${loc.desc}<br><a href="detail.html?wisata=${loc.name.toLowerCase().replace(/ /g, "-")}" style="color:#581c1c; font-weight:bold; font-size:11px;">Lihat Detail →</a>`);
+            
+            markerLayerGroup.addLayer(marker);
+        }
+    });
+}
+
+// 5. Event Listener untuk memicu filter saat checkbox diklik oleh user
+document.getElementById('cat-nature').addEventListener('change', renderMarkers);
+document.getElementById('cat-beach').addEventListener('change', renderMarkers);
+
+// Jalankan rendering marker pertama kali peta dimuat
+renderMarkers();
